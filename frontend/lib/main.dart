@@ -53,16 +53,10 @@ class _LoginState extends State<Login> {
       'username': loginController.text,
       'password': passwordController.text
     });
-
-    if (response.statusCode == 200) {
-      return LoginResponse.fromJson(jsonDecode(response.body));
-    } else {
-      Fluttertoast.showToast(
-          msg: 'Failed to login',
-          gravity: ToastGravity.TOP,
-          backgroundColor: Colors.red,
-          fontSize: 18.0);
+    if (response.statusCode != 200) {
+      return null;
     }
+    return LoginResponse.fromJson(jsonDecode(response.body));
   }
 
   @override
@@ -94,13 +88,39 @@ class _LoginState extends State<Login> {
               ),
               ElevatedButton(
                 style: style,
-                onPressed: () {
-                  login().then((value) => print(value?.token));
+                onPressed: () async {
+                  LoginResponse? response = await login();
+                  if (response == null) {
+                    Fluttertoast.showToast(
+                        msg: 'Failed to login',
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.red,
+                        fontSize: 18.0);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FirstRoute()),
+                    );
+                  }
                 },
                 child: const Text('Log In'),
               ),
             ],
           )),
     )));
+  }
+}
+
+class FirstRoute extends StatelessWidget {
+  const FirstRoute({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text("Connected"),
+      ),
+    );
   }
 }
