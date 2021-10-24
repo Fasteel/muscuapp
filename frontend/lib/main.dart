@@ -34,7 +34,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
-  final ButtonStyle tyle = ElevatedButton.styleFrom(
+  final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20),
       padding: const EdgeInsets.all(13.0));
 
@@ -89,7 +89,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               ElevatedButton(
-                style: tyle,
+                style: style,
                 onPressed: () {
                   login().then((value) => print(value.title));
                 },
