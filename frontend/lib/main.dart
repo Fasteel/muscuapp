@@ -42,6 +42,7 @@ class _LoginState extends State<Login> {
               labelText: 'Login',
             ),
           ),
+          SizedBox(height: 10),
           TextField(
             obscureText: true,
             decoration: InputDecoration(
