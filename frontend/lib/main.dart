@@ -32,9 +32,11 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Form(
+        body: Center(
+            child: Form(
       key: _formKey,
-      child: Column(
+      child: Wrap(
+        runSpacing: 20.0,
         children: const <Widget>[
           TextField(
             decoration: InputDecoration(
@@ -42,7 +44,6 @@ class _LoginState extends State<Login> {
               labelText: 'Login',
             ),
           ),
-          SizedBox(height: 10),
           TextField(
             obscureText: true,
             decoration: InputDecoration(
@@ -52,6 +53,6 @@ class _LoginState extends State<Login> {
           ),
         ],
       ),
-    ));
+    )));
   }
 }
