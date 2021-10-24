@@ -48,16 +48,15 @@ class _LoginState extends State<Login> {
 
   Future<LoginResponse> login() async {
     final response = await http
-        .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
+        .post(Uri.parse('http://127.0.0.1:8000/api-token-auth/'), body: {
+      'username': loginController.text,
+      'password': passwordController.text
+    });
 
     if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
       return LoginResponse.fromJson(jsonDecode(response.body));
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load album');
+      throw Exception('Failed to login');
     }
   }
 
@@ -91,7 +90,7 @@ class _LoginState extends State<Login> {
               ElevatedButton(
                 style: style,
                 onPressed: () {
-                  login().then((value) => print(value.title));
+                  login().then((value) => print(value.token));
                 },
                 child: const Text('Log In'),
               ),
