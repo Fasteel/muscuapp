@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:muscuapp/factories/login_response.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,7 +47,7 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
-  Future<LoginResponse> login() async {
+  Future<LoginResponse?> login() async {
     final response = await http
         .post(Uri.parse('http://127.0.0.1:8000/api-token-auth/'), body: {
       'username': loginController.text,
@@ -56,7 +57,11 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       return LoginResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to login');
+      Fluttertoast.showToast(
+          msg: 'Failed to login',
+          gravity: ToastGravity.TOP,
+          backgroundColor: Colors.red,
+          fontSize: 18.0);
     }
   }
 
@@ -90,7 +95,7 @@ class _LoginState extends State<Login> {
               ElevatedButton(
                 style: style,
                 onPressed: () {
-                  login().then((value) => print(value.token));
+                  login().then((value) => print(value?.token));
                 },
                 child: const Text('Log In'),
               ),
