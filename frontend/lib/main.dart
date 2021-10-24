@@ -28,6 +28,9 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  final ButtonStyle tyle = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(fontSize: 20),
+      padding: const EdgeInsets.all(13.0));
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +38,32 @@ class _LoginState extends State<Login> {
         body: Center(
             child: Form(
       key: _formKey,
-      child: Wrap(
-        runSpacing: 20.0,
-        children: const <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Login',
-            ),
-          ),
-          TextField(
-            obscureText: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Password',
-            ),
-          ),
-        ],
-      ),
+      child: SizedBox(
+          height: 240,
+          width: 300,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              const TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Login',
+                ),
+              ),
+              const TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                ),
+              ),
+              ElevatedButton(
+                style: tyle,
+                onPressed: () {},
+                child: const Text('Log In'),
+              ),
+            ],
+          )),
     )));
   }
 }
