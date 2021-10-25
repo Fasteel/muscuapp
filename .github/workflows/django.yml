@@ -33,5 +33,4 @@ jobs:
         pip install djangorestframework
     - name: Run Tests
       run: |
-        cd project
-        python3 manage.py test
+        cd project & python3 manage.py test
