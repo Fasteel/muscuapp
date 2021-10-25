@@ -32,8 +32,7 @@ jobs:
         source env/bin/activate
         pip install django
         pip install djangorestframework
-        cd project
-        python3 manage.py test
     - name: Run Tests
       run: |
-        python manage.py test
+        cd project
+        python3 manage.py test
