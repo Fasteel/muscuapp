@@ -12,4 +12,4 @@ class WorkoutTestCase(TestCase):
 
     def test_workout_with_default_state(self):
         state = getattr(Workout.objects.get(title=self.title), 'state')
-        self.assertEqual(state, "AC")
+        self.assertEqual(state, "A")
