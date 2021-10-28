@@ -15,9 +15,11 @@ class WorkoutListSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'state', 'user', 'days']
 
 class WorkoutCreateSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source="workout.id")
+
     class Meta:
         model = Workout
-        fields = ['id', 'title', 'state', 'user', 'days']
+        fields = ['id', 'title', 'state', 'days', 'user']
 
     def create(self, validated_data):
         days = validated_data.pop('days')
