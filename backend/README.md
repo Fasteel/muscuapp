@@ -5,6 +5,7 @@ python3 -m venv env
 source env/bin/activate
 pip install django
 pip install djangorestframework
+pip install python-dotenv
 cd project
 python3 manage.py migrate
 python3 manage.py runserver

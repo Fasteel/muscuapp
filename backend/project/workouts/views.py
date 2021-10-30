@@ -1,11 +1,9 @@
-from django.http.response import JsonResponse
 from workouts.models import Day
 from workouts.serializers import DaySerializer
 from workouts.models import Workout
 from workouts.serializers import WorkoutListSerializer, WorkoutCreateSerializer
-from rest_framework import generics, response
+from rest_framework import generics
 from rest_framework import permissions
-from rest_framework import status
 
 class WorkoutListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]

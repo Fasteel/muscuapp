@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.fields import ReadOnlyField
 from workouts.models import Workout, Day
 
 class DaySerializer(serializers.ModelSerializer):
