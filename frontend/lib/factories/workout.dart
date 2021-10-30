@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:muscuapp/factories/day.dart';
 
 class Workout {
