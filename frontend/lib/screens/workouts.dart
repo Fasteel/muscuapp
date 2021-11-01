@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:muscuapp/factories/day.dart';
 import '../global_state.dart' as global_state;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -61,8 +62,9 @@ class _WorkoutListState extends State<WorkoutList> {
               return Card(
                   child: ListTile(
                 title: Text(snapshot.data![index].title),
-                subtitle: Text(
-                    snapshot.data![index].days.map((e) => e.key).join(', ')),
+                subtitle: Text(snapshot.data![index].days
+                    .map((day) => Day.getTranslation(day.key))
+                    .join(', ')),
               ));
             },
             itemCount: snapshot.data!.length,
