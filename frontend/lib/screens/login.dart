@@ -18,9 +18,10 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  bool loading = false;
   final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20),
-      padding: const EdgeInsets.all(13.0));
+      padding: const EdgeInsets.all(15.0));
 
   @override
   void dispose() {
@@ -80,7 +81,13 @@ class _LoginState extends State<Login> {
               ElevatedButton(
                 style: style,
                 onPressed: () async {
+                  setState(() {
+                    loading = true;
+                  });
                   LoginResponse? response = await login();
+                  setState(() {
+                    loading = false;
+                  });
                   if (response == null) {
                     Fluttertoast.showToast(
                         msg: 'Failed to login',
@@ -94,7 +101,24 @@ class _LoginState extends State<Login> {
                     );
                   }
                 },
-                child: const Text('Log In'),
+                child: AnimatedSwitcher(
+                  child: SizedBox(
+                    width: 150,
+                    height: 25,
+                    child: Center(
+                      child: loading
+                          ? const SizedBox(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                              height: 20.0,
+                              width: 20.0,
+                            )
+                          : const Text('Log In'),
+                    ),
+                  ),
+                  duration: const Duration(milliseconds: 500),
+                ),
               ),
             ],
           )),
