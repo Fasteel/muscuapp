@@ -1,20 +1,20 @@
 import 'dart:convert';
 
+import 'package:muscuapp/screens/workouts_screen.dart';
 import '../global_state.dart' as global_state;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:muscuapp/factories/login_response.dart';
+import 'package:muscuapp/model/login_response.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:muscuapp/screens/workouts.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
                 controller: usernameController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Login',
+                  labelText: 'Username',
                 ),
               ),
               TextField(
@@ -97,7 +97,8 @@ class _LoginState extends State<Login> {
                   } else {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Workouts()),
+                      MaterialPageRoute(
+                          builder: (context) => const WorkoutsScreen()),
                     );
                   }
                 },
