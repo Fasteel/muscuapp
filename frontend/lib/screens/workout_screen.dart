@@ -38,14 +38,16 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             icon: const Icon(Icons.check),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                // NEED REFACTO
-                var daysPK = [];
-                for (var i = 0; i < translations.keys.length; i++) {
-                  if (days.contains(translations.keys.elementAt(i))) {
-                    daysPK.add(i + 1);
+                var i = 0;
+                var daysPK =
+                    translations.keys.fold<List<int>>([], (value, element) {
+                  i++;
+                  if (days.contains(element)) {
+                    value.add(i);
                   }
-                }
-                // NEED REFACTO
+
+                  return value;
+                });
 
                 final response = await http.post(
                     Uri.parse('http://127.0.0.1:8000/workouts/'),
