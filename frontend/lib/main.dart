@@ -1,4 +1,4 @@
-import 'package:muscuapp/screens/login.dart';
+import 'package:muscuapp/screens/login_screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Login(),
+      home: const LoginScreen(),
     );
   }
 }
