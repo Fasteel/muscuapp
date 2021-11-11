@@ -54,19 +54,11 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                 return Card(
                     child: ListTile(
                   onTap: () async {
-                    var workoutFromSnapshot = snapshot.data![index];
-                    var workout = Workout(
-                        id: workoutFromSnapshot.id,
-                        title: workoutFromSnapshot.title,
-                        state: workoutFromSnapshot.state,
-                        user: workoutFromSnapshot.user,
-                        days: workoutFromSnapshot.days);
-
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              WorkoutScreen(workout: workout)),
+                              WorkoutScreen(workout: snapshot.data![index])),
                     );
                     setState(() {
                       _workouts = getWorkouts();
