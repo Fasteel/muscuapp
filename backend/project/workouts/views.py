@@ -20,8 +20,11 @@ class WorkoutListCreate(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 class WorkoutDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Workout.objects.all()
-    serializer_class = WorkoutListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = WorkoutCreateSerializer
+
+    def get_queryset(self):
+        return Workout.objects.filter(user=self.request.user)
 
 class DayList(generics.ListAPIView):
     queryset = Day.objects.all()

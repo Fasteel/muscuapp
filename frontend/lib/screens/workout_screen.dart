@@ -7,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:muscuapp/model/day.dart';
 import 'package:http/http.dart' as http;
+import 'package:muscuapp/model/workout.dart';
 import '../global_state.dart' as global_state;
 
 import 'days_screen.dart';
 
 class WorkoutScreen extends StatefulWidget {
-  const WorkoutScreen({Key? key}) : super(key: key);
+  const WorkoutScreen({Key? key, this.workout}) : super(key: key);
+
+  final Workout? workout;
 
   @override
   _WorkoutScreenState createState() => _WorkoutScreenState();
@@ -22,6 +25,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   final titleController = TextEditingController();
   List<String> days = List<String>.empty();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.workout != null) {
+      titleController.text = widget.workout!.title;
+      days = widget.workout!.days.map((e) => e.key).toList();
+    }
+  }
 
   @override
   void dispose() {
@@ -49,30 +61,57 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                   return value;
                 });
 
-                final response = await http.post(
-                    Uri.parse('http://127.0.0.1:8000/workouts/'),
-                    headers: {
-                      HttpHeaders.authorizationHeader: global_state.token,
-                      HttpHeaders.contentTypeHeader: 'application/json'
-                    },
-                    body: jsonEncode({
-                      "title": titleController.text,
-                      "state": "AC",
-                      "days": daysPK
-                    }));
-
-                if (response.statusCode != 201) {
-                  Fluttertoast.showToast(
-                      msg: 'Failed to create workout',
-                      gravity: ToastGravity.TOP,
-                      backgroundColor: Colors.red,
-                      fontSize: 18.0);
+                if (widget.workout == null) {
+                  final response = await http.post(
+                      Uri.parse('http://127.0.0.1:8000/workouts/'),
+                      headers: {
+                        HttpHeaders.authorizationHeader: global_state.token,
+                        HttpHeaders.contentTypeHeader: 'application/json'
+                      },
+                      body: jsonEncode({
+                        "title": titleController.text,
+                        "state": "AC",
+                        "days": daysPK
+                      }));
+                  if (response.statusCode != 201) {
+                    Fluttertoast.showToast(
+                        msg: 'Failed to create workout',
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.red,
+                        fontSize: 18.0);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: 'Workout created',
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.green,
+                        fontSize: 18.0);
+                  }
                 } else {
-                  Fluttertoast.showToast(
-                      msg: 'Workout created',
-                      gravity: ToastGravity.TOP,
-                      backgroundColor: Colors.green,
-                      fontSize: 18.0);
+                  final response = await http.put(
+                      Uri.parse('http://127.0.0.1:8000/workouts/' +
+                          widget.workout!.id.toString()),
+                      headers: {
+                        HttpHeaders.authorizationHeader: global_state.token,
+                        HttpHeaders.contentTypeHeader: 'application/json'
+                      },
+                      body: jsonEncode({
+                        "title": titleController.text,
+                        "state": "AC",
+                        "days": daysPK
+                      }));
+                  if (response.statusCode != 200) {
+                    Fluttertoast.showToast(
+                        msg: 'Failed to update workout',
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.red,
+                        fontSize: 18.0);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: 'Workout updated',
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.green,
+                        fontSize: 18.0);
+                  }
                 }
 
                 Navigator.pop(context);
