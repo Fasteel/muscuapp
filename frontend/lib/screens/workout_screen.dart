@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:muscuapp/model/day.dart';
 import 'package:http/http.dart' as http;
+import 'package:muscuapp/model/exercice.dart';
 import 'package:muscuapp/model/workout.dart';
 import '../global_state.dart' as global_state;
 
@@ -25,6 +26,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   final titleController = TextEditingController();
   List<String> days = List<String>.empty();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late Future<List<Exercice>> _exercices;
 
   @override
   void initState() {
@@ -32,7 +34,23 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     if (widget.workout != null) {
       titleController.text = widget.workout!.title;
       days = widget.workout!.days.map((e) => e.key).toList();
+      _exercices = getExercices();
     }
+  }
+
+  Future<List<Exercice>> getExercices() async {
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/exercices/?workout=' +
+          widget.workout!.id.toString()),
+      headers: {
+        HttpHeaders.authorizationHeader: global_state.token,
+      },
+    );
+    if (response.statusCode != 200) {
+      return List<Exercice>.empty();
+    }
+    return List<Exercice>.from(
+        json.decode(response.body).map((data) => Exercice.fromJson(data)));
   }
 
   @override
@@ -172,9 +190,86 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       ),
                     ),
                   ),
-                )
+                ),
+                const SizedBox(height: 20),
+                FutureBuilder(
+                    future: _exercices,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Exercice>> snapshot) {
+                      if (widget.workout == null) {
+                        return const Text("");
+                      }
+
+                      if (widget.workout != null && !snapshot.hasData) {
+                        return const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          var exercice = snapshot.data![index];
+                          return ExerciceCard(
+                              title: exercice.title,
+                              subTitle: exercice.setNumber.toString() +
+                                  " x " +
+                                  exercice.repetitionNumber.toString() +
+                                  " rep",
+                              rightLabel:
+                                  exercice.pauseDuration.toString() + " sec");
+                        },
+                      );
+                    })
               ],
             )),
+      ),
+    );
+  }
+}
+
+class ExerciceCard extends StatelessWidget {
+  const ExerciceCard(
+      {Key? key, this.title = "", this.subTitle = "", this.rightLabel = ""})
+      : super(key: key);
+
+  final String title;
+  final String subTitle;
+  final String rightLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(title),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(subTitle,
+                      style: TextStyle(color: Colors.grey.shade600)),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child:
+                Text(rightLabel, style: TextStyle(color: Colors.grey.shade600)),
+          ),
+        ],
       ),
     );
   }

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from workouts.models import Exercice
 from workouts.models import Workout, Day
 
 class DaySerializer(serializers.ModelSerializer):
@@ -27,3 +28,8 @@ class WorkoutCreateSerializer(serializers.ModelSerializer):
             instance.days.add(day)
 
         return instance
+
+class ExerciceListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exercice
+        fields = ['id', 'title', 'pause_duration', 'set_number', 'repetition_number', 'weight', 'workout', 'position']
