@@ -31,7 +31,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install django
         pip install djangorestframework
-        pip install django_filters
+        pip install django-filter
     - name: Run Tests
       run: |
         cd project 

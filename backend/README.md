@@ -6,7 +6,7 @@ source env/bin/activate
 pip install django
 pip install djangorestframework
 pip install python-dotenv
-pip install django_filters
+pip install django-filter
 cd project
 python3 manage.py migrate
 python3 manage.py runserver
