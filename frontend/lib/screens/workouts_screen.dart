@@ -34,8 +34,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
     if (response.statusCode != 200) {
       return List<Workout>.empty();
     }
-    return List<Workout>.from(
-        json.decode(response.body).map((data) => Workout.fromJson(data)));
+    return json.decode(response.body).map((data) => Workout.fromJson(data));
   }
 
   @override
@@ -51,6 +50,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
 
             return ListView.builder(
               itemBuilder: (context, index) {
+                var workout = snapshot.data![index];
                 return Card(
                     child: ListTile(
                   onTap: () async {
@@ -58,14 +58,14 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              WorkoutScreen(workout: snapshot.data![index])),
+                              WorkoutScreen(workout: workout)),
                     );
                     setState(() {
                       _workouts = getWorkouts();
                     });
                   },
-                  title: Text(snapshot.data![index].title),
-                  subtitle: Text(snapshot.data![index].days
+                  title: Text(workout.title),
+                  subtitle: Text(workout.days
                       .map((day) => Day.getTranslation(day.key))
                       .join(', ')),
                 ));
