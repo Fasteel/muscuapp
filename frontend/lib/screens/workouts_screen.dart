@@ -34,7 +34,8 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
     if (response.statusCode != 200) {
       return List<Workout>.empty();
     }
-    return json.decode(response.body).map((data) => Workout.fromJson(data));
+    return List<Workout>.from(
+        json.decode(response.body).map((data) => Workout.fromJson(data)));
   }
 
   @override
