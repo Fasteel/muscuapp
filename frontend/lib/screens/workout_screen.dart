@@ -25,7 +25,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   final titleController = TextEditingController();
   List<String> days = List<String>.empty();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late Future<List<Exercice>> _exercices;
+  late Future<List<Exercice>>? _exercices;
 
   @override
   void initState() {
@@ -34,6 +34,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       titleController.text = widget.workout!.title;
       days = widget.workout!.days.map((e) => e.key).toList();
       _exercices = getExercices();
+    } else {
+      _exercices = null;
     }
   }
 
@@ -191,7 +193,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                FutureBuilder(
+                FutureBuilder<List<Exercice>>(
                     future: _exercices,
                     builder: (BuildContext context,
                         AsyncSnapshot<List<Exercice>> snapshot) {
