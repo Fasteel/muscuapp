@@ -11,6 +11,7 @@ import 'package:muscuapp/model/workout.dart';
 import '../global_state.dart' as global_state;
 
 import 'days_screen.dart';
+import 'exercice_screen.dart';
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({Key? key, this.workout}) : super(key: key);
@@ -228,6 +229,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               ],
             )),
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ExerciceScreen()),
+            );
+            // TODO Refresh view with new datas
+          },
+          child: const Icon(Icons.add)),
     );
   }
 }
