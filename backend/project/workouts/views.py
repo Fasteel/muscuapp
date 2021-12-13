@@ -24,7 +24,7 @@ class WorkoutListCreate(generics.ListCreateAPIView):
 
 class WorkoutDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = WorkoutCreateSerializer
+    serializer_class = WorkoutListSerializer
 
     def get_queryset(self):
         return Workout.objects.filter(user=self.request.user)

@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:muscuapp/model/day.dart';
 import 'package:http/http.dart' as http;
 import 'package:muscuapp/model/exercice.dart';
@@ -40,6 +42,16 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     }
   }
 
+  Future<Workout> getWorkout(int id) async {
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/workouts/' + id.toString()),
+      headers: {
+        HttpHeaders.authorizationHeader: global_state.token,
+      },
+    );
+    return Workout.fromJson(json.decode(response.body));
+  }
+
   Future<List<Exercice>> getExercices() async {
     final response = await http.get(
       Uri.parse('http://127.0.0.1:8000/exercices/?workout=' +
@@ -61,6 +73,60 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     super.dispose();
   }
 
+  Future<int?> saveWorkout() async {
+    if (!_formKey.currentState!.validate()) {
+      return null;
+    }
+
+    var i = 0;
+    var daysPK = translations.keys.fold<List<int>>([], (value, element) {
+      i++;
+      if (days.contains(element)) {
+        value.add(i);
+      }
+
+      return value;
+    });
+
+    Response res;
+
+    if (widget.workout == null) {
+      res = await http.post(Uri.parse('http://127.0.0.1:8000/workouts/'),
+          headers: {
+            HttpHeaders.authorizationHeader: global_state.token,
+            HttpHeaders.contentTypeHeader: 'application/json'
+          },
+          body: jsonEncode(
+              {"title": titleController.text, "state": "AC", "days": daysPK}));
+    } else {
+      res = await http.put(
+          Uri.parse('http://127.0.0.1:8000/workouts/' +
+              widget.workout!.id.toString()),
+          headers: {
+            HttpHeaders.authorizationHeader: global_state.token,
+            HttpHeaders.contentTypeHeader: 'application/json'
+          },
+          body: jsonEncode(
+              {"title": titleController.text, "state": "AC", "days": daysPK}));
+    }
+
+    if (res.statusCode != 201) {
+      Fluttertoast.showToast(
+          msg: 'Failed to create workout',
+          gravity: ToastGravity.TOP,
+          backgroundColor: Colors.red,
+          fontSize: 18.0);
+      return null;
+    }
+
+    Fluttertoast.showToast(
+        msg: 'Workout created',
+        gravity: ToastGravity.TOP,
+        backgroundColor: Colors.green,
+        fontSize: 18.0);
+    return jsonDecode(res.body)['id'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,73 +135,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                var i = 0;
-                var daysPK =
-                    translations.keys.fold<List<int>>([], (value, element) {
-                  i++;
-                  if (days.contains(element)) {
-                    value.add(i);
-                  }
-
-                  return value;
-                });
-
-                if (widget.workout == null) {
-                  final response = await http.post(
-                      Uri.parse('http://127.0.0.1:8000/workouts/'),
-                      headers: {
-                        HttpHeaders.authorizationHeader: global_state.token,
-                        HttpHeaders.contentTypeHeader: 'application/json'
-                      },
-                      body: jsonEncode({
-                        "title": titleController.text,
-                        "state": "AC",
-                        "days": daysPK
-                      }));
-                  if (response.statusCode != 201) {
-                    Fluttertoast.showToast(
-                        msg: 'Failed to create workout',
-                        gravity: ToastGravity.TOP,
-                        backgroundColor: Colors.red,
-                        fontSize: 18.0);
-                  } else {
-                    Fluttertoast.showToast(
-                        msg: 'Workout created',
-                        gravity: ToastGravity.TOP,
-                        backgroundColor: Colors.green,
-                        fontSize: 18.0);
-                  }
-                } else {
-                  final response = await http.put(
-                      Uri.parse('http://127.0.0.1:8000/workouts/' +
-                          widget.workout!.id.toString()),
-                      headers: {
-                        HttpHeaders.authorizationHeader: global_state.token,
-                        HttpHeaders.contentTypeHeader: 'application/json'
-                      },
-                      body: jsonEncode({
-                        "title": titleController.text,
-                        "state": "AC",
-                        "days": daysPK
-                      }));
-                  if (response.statusCode != 200) {
-                    Fluttertoast.showToast(
-                        msg: 'Failed to update workout',
-                        gravity: ToastGravity.TOP,
-                        backgroundColor: Colors.red,
-                        fontSize: 18.0);
-                  } else {
-                    Fluttertoast.showToast(
-                        msg: 'Workout updated',
-                        gravity: ToastGravity.TOP,
-                        backgroundColor: Colors.green,
-                        fontSize: 18.0);
-                  }
-                }
-
-                Navigator.pop(context);
-              }
+              await saveWorkout();
+              Navigator.pop(context);
             },
           )
         ],
@@ -231,9 +232,17 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
+            var workoutId = await saveWorkout();
+            if (workoutId == null) {
+              return;
+            }
+
+            var workout = await getWorkout(workoutId);
+
             await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ExerciceScreen()),
+              MaterialPageRoute(
+                  builder: (context) => ExerciceScreen(workout: workout)),
             );
             // TODO Refresh view with new datas
           },

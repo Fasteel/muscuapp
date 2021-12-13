@@ -3,7 +3,7 @@ from workouts.models import Exercice
 from workouts.models import Workout, Day
 
 class DaySerializer(serializers.ModelSerializer):
-    class Meta():
+    class Meta:
         model = Day
         fields = ['id', 'key']
 
