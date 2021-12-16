@@ -29,6 +29,11 @@ class WorkoutDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Workout.objects.filter(user=self.request.user)
 
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return WorkoutCreateSerializer
+        return WorkoutListSerializer
+
 class DayList(generics.ListAPIView):
     queryset = Day.objects.all()
     serializer_class = DaySerializer
