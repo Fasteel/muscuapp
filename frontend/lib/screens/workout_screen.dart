@@ -29,13 +29,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   List<String> days = List<String>.empty();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late Future<List<Exercice>>? _exercices;
+  Workout? _workout;
 
   @override
   void initState() {
     super.initState();
     if (widget.workout != null) {
-      titleController.text = widget.workout!.title;
-      days = widget.workout!.days.map((e) => e.key).toList();
+      _workout = widget.workout;
+      titleController.text = _workout!.title;
+      days = _workout!.days.map((e) => e.key).toList();
       _exercices = getExercices();
     } else {
       _exercices = null;
@@ -55,7 +57,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   Future<List<Exercice>> getExercices() async {
     final response = await http.get(
       Uri.parse('http://127.0.0.1:8000/exercices/?workout=' +
-          widget.workout!.id.toString()),
+          _workout!.id.toString()),
       headers: {
         HttpHeaders.authorizationHeader: global_state.token,
       },
@@ -90,7 +92,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
     Response res;
 
-    if (widget.workout == null) {
+    if (_workout == null) {
       res = await http.post(Uri.parse('http://127.0.0.1:8000/workouts/'),
           headers: {
             HttpHeaders.authorizationHeader: global_state.token,
@@ -100,8 +102,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               {"title": titleController.text, "state": "AC", "days": daysPK}));
     } else {
       res = await http.put(
-          Uri.parse('http://127.0.0.1:8000/workouts/' +
-              widget.workout!.id.toString()),
+          Uri.parse(
+              'http://127.0.0.1:8000/workouts/' + _workout!.id.toString()),
           headers: {
             HttpHeaders.authorizationHeader: global_state.token,
             HttpHeaders.contentTypeHeader: 'application/json'
@@ -199,11 +201,11 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     future: _exercices,
                     builder: (BuildContext context,
                         AsyncSnapshot<List<Exercice>> snapshot) {
-                      if (widget.workout == null) {
+                      if (_workout == null) {
                         return const Text("");
                       }
 
-                      if (widget.workout != null && !snapshot.hasData) {
+                      if (_workout != null && !snapshot.hasData) {
                         return const Padding(
                           padding: EdgeInsets.all(16.0),
                           child: CircularProgressIndicator(),
@@ -238,13 +240,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             }
 
             var workout = await getWorkout(workoutId);
+            setState(() {
+              _workout = workout;
+            });
 
             await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ExerciceScreen(workout: workout)),
             );
-            // TODO Refresh view with new datas
+
+            setState(() {
+              _exercices = getExercices();
+            });
           },
           child: const Icon(Icons.add)),
     );
