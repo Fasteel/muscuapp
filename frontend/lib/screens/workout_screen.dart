@@ -112,7 +112,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               {"title": titleController.text, "state": "AC", "days": daysPK}));
     }
 
-    if (res.statusCode != 201) {
+    if (res.statusCode != 201 && res.statusCode != 200) {
       Fluttertoast.showToast(
           msg: 'Failed to create workout',
           gravity: ToastGravity.TOP,
