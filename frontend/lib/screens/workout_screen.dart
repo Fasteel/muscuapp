@@ -249,7 +249,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               MaterialPageRoute(
                   builder: (context) => ExerciceScreen(workout: workout)),
             );
-            // TODO Refresh view with new datas
 
             setState(() {
               _exercices = getExercices();
