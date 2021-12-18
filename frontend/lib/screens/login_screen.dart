@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:muscuapp/screens/workouts_screen.dart';
-import '../global_state.dart' as global_state;
+import 'package:muscuapp/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:muscuapp/model/login_response.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -29,26 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
     usernameController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
-
-  void setGlobalState(String username, String password) {
-    var bytes =
-        utf8.encode(usernameController.text + ":" + passwordController.text);
-    global_state.token = "Basic " + base64.encode(bytes);
-    global_state.isLoggedIn = true;
-  }
-
-  Future<LoginResponse?> login() async {
-    final response = await http
-        .post(Uri.parse('http://127.0.0.1:8000/api-token-auth/'), body: {
-      'username': usernameController.text,
-      'password': passwordController.text
-    });
-    if (response.statusCode != 200) {
-      return null;
-    }
-    setGlobalState(usernameController.text, passwordController.text);
-    return LoginResponse.fromJson(jsonDecode(response.body));
   }
 
   @override
@@ -84,7 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   setState(() {
                     loading = true;
                   });
-                  LoginResponse? response = await login();
+                  LoginResponse? response = await AuthService.login(
+                      usernameController.text, passwordController.text);
+
                   setState(() {
                     loading = false;
                   });

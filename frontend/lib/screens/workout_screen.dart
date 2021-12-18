@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -7,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:muscuapp/model/day.dart';
-import 'package:http/http.dart' as http;
 import 'package:muscuapp/model/exercice.dart';
 import 'package:muscuapp/model/workout.dart';
-import '../global_state.dart' as global_state;
+import 'package:muscuapp/services/exercice_service.dart';
+import 'package:muscuapp/services/workout_service.dart';
 
 import 'days_screen.dart';
 import 'exercice_screen.dart';
@@ -38,35 +36,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       _workout = widget.workout;
       titleController.text = _workout!.title;
       days = _workout!.days.map((e) => e.key).toList();
-      _exercices = getExercices();
+      _exercices = ExerciceService.fetchExercices(_workout);
     } else {
       _exercices = null;
     }
-  }
-
-  Future<Workout> getWorkout(int id) async {
-    final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/workouts/' + id.toString()),
-      headers: {
-        HttpHeaders.authorizationHeader: global_state.token,
-      },
-    );
-    return Workout.fromJson(json.decode(response.body));
-  }
-
-  Future<List<Exercice>> getExercices() async {
-    final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/exercices/?workout=' +
-          _workout!.id.toString()),
-      headers: {
-        HttpHeaders.authorizationHeader: global_state.token,
-      },
-    );
-    if (response.statusCode != 200) {
-      return List<Exercice>.empty();
-    }
-    return List<Exercice>.from(
-        json.decode(response.body).map((data) => Exercice.fromJson(data)));
   }
 
   @override
@@ -93,23 +66,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     Response res;
 
     if (_workout == null) {
-      res = await http.post(Uri.parse('http://127.0.0.1:8000/workouts/'),
-          headers: {
-            HttpHeaders.authorizationHeader: global_state.token,
-            HttpHeaders.contentTypeHeader: 'application/json'
-          },
-          body: jsonEncode(
-              {"title": titleController.text, "state": "AC", "days": daysPK}));
+      res = await WorkoutService.create(titleController.text, daysPK);
     } else {
-      res = await http.put(
-          Uri.parse(
-              'http://127.0.0.1:8000/workouts/' + _workout!.id.toString()),
-          headers: {
-            HttpHeaders.authorizationHeader: global_state.token,
-            HttpHeaders.contentTypeHeader: 'application/json'
-          },
-          body: jsonEncode(
-              {"title": titleController.text, "state": "AC", "days": daysPK}));
+      res = await WorkoutService.update(
+          _workout!.id, titleController.text, daysPK);
     }
 
     if (res.statusCode != 201 && res.statusCode != 200) {
@@ -239,7 +199,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               return;
             }
 
-            var workout = await getWorkout(workoutId);
+            var workout = await WorkoutService.fetch(workoutId);
             setState(() {
               _workout = workout;
             });
@@ -251,7 +211,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             );
 
             setState(() {
-              _exercices = getExercices();
+              _exercices = ExerciceService.fetchExercices(_workout);
             });
           },
           child: const Icon(Icons.add)),
