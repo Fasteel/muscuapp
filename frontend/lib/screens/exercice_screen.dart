@@ -1,12 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:muscuapp/model/workout.dart';
-import '../global_state.dart' as global_state;
-import 'package:http/http.dart' as http;
+import 'package:muscuapp/services/exercice_service.dart';
 
 class ExerciceScreen extends StatefulWidget {
   const ExerciceScreen({Key? key, required this.workout}) : super(key: key);
@@ -34,21 +30,14 @@ class _ExerciceScreenState extends State<ExerciceScreen> {
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () async {
-                final response = await http.post(
-                    Uri.parse('http://127.0.0.1:8000/exercices/'),
-                    headers: {
-                      HttpHeaders.authorizationHeader: global_state.token,
-                      HttpHeaders.contentTypeHeader: 'application/json'
-                    },
-                    body: jsonEncode({
-                      "title": titleController.text,
-                      "pause_duration": pauseDurationController.text,
-                      "set_number": setNumberController.text,
-                      "repetition_number": repetitionNumberController.text,
-                      "weight": weightController.text,
-                      "workout": widget.workout.id,
-                      "position": positionController.text
-                    }));
+                final response = await ExerciceService.create(
+                    titleController.text,
+                    int.parse(pauseDurationController.text),
+                    int.parse(setNumberController.text),
+                    int.parse(repetitionNumberController.text),
+                    int.parse(weightController.text),
+                    widget.workout.id,
+                    int.parse(positionController.text));
                 if (response.statusCode != 201) {
                   Fluttertoast.showToast(
                       msg: 'Failed to create exercice',

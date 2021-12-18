@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:muscuapp/model/day.dart';
-import '../global_state.dart' as global_state;
+import 'package:muscuapp/services/workout_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:muscuapp/model/workout.dart';
 import 'package:muscuapp/screens/workout_screen.dart';
 
@@ -21,21 +17,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
   @override
   void initState() {
     super.initState();
-    _workouts = getWorkouts();
-  }
-
-  Future<List<Workout>> getWorkouts() async {
-    final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/workouts/'),
-      headers: {
-        HttpHeaders.authorizationHeader: global_state.token,
-      },
-    );
-    if (response.statusCode != 200) {
-      return List<Workout>.empty();
-    }
-    return List<Workout>.from(
-        json.decode(response.body).map((data) => Workout.fromJson(data)));
+    _workouts = WorkoutService.fetchAll();
   }
 
   @override
@@ -62,7 +44,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                               WorkoutScreen(workout: workout)),
                     );
                     setState(() {
-                      _workouts = getWorkouts();
+                      _workouts = WorkoutService.fetchAll();
                     });
                   },
                   title: Text(workout.title),
@@ -81,7 +63,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
               MaterialPageRoute(builder: (context) => const WorkoutScreen()),
             );
             setState(() {
-              _workouts = getWorkouts();
+              _workouts = WorkoutService.fetchAll();
             });
           },
           child: const Icon(Icons.add)),
