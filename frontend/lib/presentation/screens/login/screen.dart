@@ -1,8 +1,8 @@
-import 'package:muscuapp/screens/workouts_screen.dart';
-import 'package:muscuapp/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:muscuapp/model/login_response.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:muscuapp/application/models/login_response.dart';
+import 'package:muscuapp/infrastructure/services/auth.dart';
+import 'package:muscuapp/presentation/screens/workouts/screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

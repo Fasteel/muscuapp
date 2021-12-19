@@ -1,4 +1,4 @@
-import 'package:muscuapp/model/day.dart';
+import 'day.dart';
 
 class Workout {
   int id;

@@ -1,17 +1,18 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
-import 'package:muscuapp/model/day.dart';
-import 'package:muscuapp/model/exercice.dart';
-import 'package:muscuapp/model/workout.dart';
-import 'package:muscuapp/services/exercice_service.dart';
-import 'package:muscuapp/services/workout_service.dart';
+import 'package:muscuapp/application/helpers/day.dart';
+import 'package:muscuapp/application/models/exercice.dart';
+import 'package:muscuapp/application/models/workout.dart';
+import 'package:muscuapp/infrastructure/services/exercice.dart';
+import 'package:muscuapp/infrastructure/services/workout.dart';
+import 'package:muscuapp/presentation/screens/exercice/screen.dart';
 
-import 'days_screen.dart';
-import 'exercice_screen.dart';
+import 'widgets/exercice_card.dart';
+import 'widgets/workout_title_input.dart';
+import 'widgets/workout_day_selector.dart';
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({Key? key, this.workout}) : super(key: key);
@@ -36,7 +37,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       _workout = widget.workout;
       titleController.text = _workout!.title;
       days = _workout!.days.map((e) => e.key).toList();
-      _exercices = ExerciceService.fetchExercices(_workout);
+      _exercices = ExerciceService.fetchAll(_workout);
     } else {
       _exercices = null;
     }
@@ -110,52 +111,17 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: titleController,
-                  validator: (value) =>
-                      value!.isEmpty ? "Title cannot be blank" : null,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Title',
-                  ),
-                ),
+                WorkoutTitleInput(titleController: titleController),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DaysScreen(days: days)),
-                    );
-
-                    setState(() {
-                      if (result != null) {
-                        days = result;
-                      }
-                    });
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      height: 60.00,
-                      child: Row(
-                        children: <Widget>[
-                          const Icon(Icons.calendar_today),
-                          const SizedBox(width: 10),
-                          Flexible(
-                              child: Text(
-                            days.isEmpty
-                                ? "Select your workout days"
-                                : days
-                                    .map((day) => Day.getTranslation(day))
-                                    .join(' - '),
-                            style: const TextStyle(fontSize: 15.0),
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                WorkoutDaySelector(
+                    days: days,
+                    onDaysSelected: (selectedDays) {
+                      setState(() {
+                        if (selectedDays != null) {
+                          days = selectedDays;
+                        }
+                      });
+                    }),
                 const SizedBox(height: 20),
                 FutureBuilder<List<Exercice>>(
                     future: _exercices,
@@ -211,54 +177,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             );
 
             setState(() {
-              _exercices = ExerciceService.fetchExercices(_workout);
+              _exercices = ExerciceService.fetchAll(_workout);
             });
           },
           child: const Icon(Icons.add)),
-    );
-  }
-}
-
-class ExerciceCard extends StatelessWidget {
-  const ExerciceCard(
-      {Key? key, this.title = "", this.subTitle = "", this.rightLabel = ""})
-      : super(key: key);
-
-  final String title;
-  final String subTitle;
-  final String rightLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(title),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(subTitle,
-                      style: TextStyle(color: Colors.grey.shade600)),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Text(rightLabel, style: TextStyle(color: Colors.grey.shade600)),
-          ),
-        ],
-      ),
     );
   }
 }

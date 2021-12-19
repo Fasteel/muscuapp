@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:muscuapp/model/day.dart';
+import 'package:muscuapp/application/helpers/day.dart';
 
 class DaysScreen extends StatefulWidget {
   const DaysScreen({Key? key, required this.days}) : super(key: key);

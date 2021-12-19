@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:muscuapp/model/workout.dart';
-import 'package:muscuapp/services/exercice_service.dart';
+import 'package:muscuapp/application/models/workout.dart';
+import 'package:muscuapp/infrastructure/services/exercice.dart';
 
 class ExerciceScreen extends StatefulWidget {
   const ExerciceScreen({Key? key, required this.workout}) : super(key: key);
