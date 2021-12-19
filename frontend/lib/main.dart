@@ -1,6 +1,5 @@
-import 'package:muscuapp/screens/login_screen.dart';
-
 import 'package:flutter/material.dart';
+import 'package:muscuapp/presentation/screens/login/screen.dart';
 
 void main() {
   runApp(const MyApp());

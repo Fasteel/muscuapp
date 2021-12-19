@@ -1,20 +1,16 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart';
-import 'package:muscuapp/model/exercice.dart';
-import 'package:http/http.dart' as http;
-import 'package:muscuapp/model/workout.dart';
-import '../global_state.dart' as global_state;
+import 'package:muscuapp/application/models/exercice.dart';
+import 'package:muscuapp/application/models/workout.dart';
+import 'package:muscuapp/infrastructure/http.dart';
 
 class ExerciceService {
-  static Future<List<Exercice>> fetchExercices(Workout? workout) async {
-    final response = await http.get(
+  static Future<List<Exercice>> fetchAll(Workout? workout) async {
+    final response = await get(
       Uri.parse(
           'http://127.0.0.1:8000/exercices/?workout=' + workout!.id.toString()),
-      headers: {
-        HttpHeaders.authorizationHeader: global_state.token,
-      },
+      headers: getDefaultHeader(),
     );
     if (response.statusCode != 200) {
       return List<Exercice>.empty();
@@ -25,11 +21,8 @@ class ExerciceService {
 
   static Future<Response> create(String title, int pauseDuration, int setNumber,
       int repetitionNumber, int weight, int workoutId, int position) {
-    return http.post(Uri.parse('http://127.0.0.1:8000/exercices/'),
-        headers: {
-          HttpHeaders.authorizationHeader: global_state.token,
-          HttpHeaders.contentTypeHeader: 'application/json'
-        },
+    return post(Uri.parse('http://127.0.0.1:8000/exercices/'),
+        headers: getDefaultHeader(),
         body: jsonEncode({
           "title": title,
           "pause_duration": pauseDuration,
