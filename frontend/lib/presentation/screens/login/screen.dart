@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:muscuapp/application/models/login_response.dart';
-import 'package:muscuapp/infrastructure/services/auth.dart';
+import 'package:muscuapp/infrastructure/services/authentication.dart';
 import 'package:muscuapp/presentation/screens/workouts/screen.dart';
 
 class LoginScreen extends StatefulWidget {
