@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:muscuapp/application/models/login_response.dart';
 import 'package:muscuapp/infrastructure/services/authentication.dart';
 import 'package:muscuapp/presentation/screens/workouts/screen.dart';
+import 'package:muscuapp/presentation/common/toast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -68,11 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     loading = false;
                   });
                   if (response == null) {
-                    Fluttertoast.showToast(
-                        msg: 'Failed to login',
-                        gravity: ToastGravity.TOP,
-                        backgroundColor: Colors.red,
-                        fontSize: 18.0);
+                    Toast.fail('Failed to login');
                   } else {
                     Navigator.push(
                       context,

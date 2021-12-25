@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:muscuapp/application/helpers/day.dart';
 import 'package:muscuapp/application/models/exercice.dart';
@@ -9,6 +8,7 @@ import 'package:muscuapp/application/models/workout.dart';
 import 'package:muscuapp/infrastructure/services/exercice.dart';
 import 'package:muscuapp/infrastructure/services/workout.dart';
 import 'package:muscuapp/presentation/screens/exercice/screen.dart';
+import 'package:muscuapp/presentation/common/toast.dart';
 
 import 'widgets/exercice_card.dart';
 import 'widgets/workout_title_input.dart';
@@ -74,19 +74,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     }
 
     if (res.statusCode != 201 && res.statusCode != 200) {
-      Fluttertoast.showToast(
-          msg: 'Failed to create workout',
-          gravity: ToastGravity.TOP,
-          backgroundColor: Colors.red,
-          fontSize: 18.0);
+      Toast.fail('Failed to create workout');
       return null;
     }
 
-    Fluttertoast.showToast(
-        msg: 'Workout created',
-        gravity: ToastGravity.TOP,
-        backgroundColor: Colors.green,
-        fontSize: 18.0);
+    Toast.success('Workout created');
+
     return jsonDecode(res.body)['id'];
   }
 

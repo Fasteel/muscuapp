@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:muscuapp/application/models/workout.dart';
 import 'package:muscuapp/infrastructure/services/exercice.dart';
+import 'package:muscuapp/presentation/common/toast.dart';
 
 class ExerciceScreen extends StatefulWidget {
   const ExerciceScreen({Key? key, required this.workout}) : super(key: key);
@@ -38,17 +38,9 @@ class _ExerciceScreenState extends State<ExerciceScreen> {
                     widget.workout.id,
                     int.parse(positionController.text));
                 if (response.statusCode != 201) {
-                  Fluttertoast.showToast(
-                      msg: 'Failed to create exercice',
-                      gravity: ToastGravity.TOP,
-                      backgroundColor: Colors.red,
-                      fontSize: 18.0);
+                  Toast.fail('Failed to create exercice');
                 } else {
-                  Fluttertoast.showToast(
-                      msg: 'Exercice created',
-                      gravity: ToastGravity.TOP,
-                      backgroundColor: Colors.green,
-                      fontSize: 18.0);
+                  Toast.success('Exercice created');
                 }
 
                 Navigator.pop(context);
