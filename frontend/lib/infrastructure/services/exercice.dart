@@ -4,12 +4,15 @@ import 'package:http/http.dart';
 import 'package:muscuapp/application/models/exercice.dart';
 import 'package:muscuapp/application/models/workout.dart';
 import 'package:muscuapp/infrastructure/http.dart';
+import 'package:muscuapp/infrastructure/constants.dart' as constants;
 
 class ExerciceService {
+  static String endpoint = 'exercices/';
+
   static Future<List<Exercice>> fetchAll(Workout? workout) async {
     final response = await get(
       Uri.parse(
-          'http://127.0.0.1:8000/exercices/?workout=' + workout!.id.toString()),
+          constants.baseUrl + endpoint + '?workout=' + workout!.id.toString()),
       headers: getDefaultHeader(),
     );
     if (response.statusCode != 200) {
@@ -21,7 +24,7 @@ class ExerciceService {
 
   static Future<Response> create(String title, int pauseDuration, int setNumber,
       int repetitionNumber, int weight, int workoutId, int position) {
-    return post(Uri.parse('http://127.0.0.1:8000/exercices/'),
+    return post(Uri.parse(constants.baseUrl + endpoint),
         headers: getDefaultHeader(),
         body: jsonEncode({
           "title": title,
