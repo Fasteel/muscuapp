@@ -22,18 +22,8 @@ class ExerciceService {
         json.decode(response.body).map((data) => Exercice.fromJson(data)));
   }
 
-  static Future<Response> create(String title, int pauseDuration, int setNumber,
-      int repetitionNumber, int weight, int workoutId, int position) {
+  static Future<Response> create(Exercice exercice) {
     return post(Uri.parse(constants.baseUrl + endpoint),
-        headers: getDefaultHeader(),
-        body: jsonEncode({
-          "title": title,
-          "pause_duration": pauseDuration,
-          "set_number": setNumber,
-          "repetition_number": repetitionNumber,
-          "weight": weight,
-          "workout": workoutId,
-          "position": position
-        }));
+        headers: getDefaultHeader(), body: exercice.toJson());
   }
 }

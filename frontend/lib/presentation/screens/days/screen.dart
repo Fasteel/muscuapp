@@ -50,25 +50,27 @@ class _DaysScreenState extends State<DaysScreen> {
                   shrinkWrap: true,
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
-                    var exercice = snapshot.data![index];
+                    var day = snapshot.data![index];
+                    var checked = selectedDays.any((e) => e.key == day.key);
 
                     return Card(
                         child: ListTile(
                       onTap: () {
                         setState(() {
-                          if (selectedDays.contains(exercice)) {
-                            selectedDays.remove(exercice);
+                          if (checked) {
+                            selectedDays = selectedDays
+                                .where((element) => element.key != day.key)
+                                .toList();
                           } else {
-                            selectedDays.add(exercice);
+                            selectedDays = [...selectedDays, day];
                           }
                         });
                       },
-                      trailing: selectedDays
-                              .any((element) => element.key == exercice.key)
+                      trailing: checked
                           ? const Icon(Icons.check_box_outlined,
                               color: Colors.blue)
                           : const Icon(Icons.check_box_outline_blank),
-                      title: Text(DayHelper.getTranslation(exercice.key)),
+                      title: Text(DayHelper.getTranslation(day.key)),
                     ));
                   },
                 );
