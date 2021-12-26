@@ -11,8 +11,8 @@ const translations = {
 };
 
 class DayHelper {
-  static getFormattedDaysFromKeyDays(List<String> keys) {
-    return keys.map((key) => getTranslation(key)).join(' - ');
+  static getFormattedDaysFromKeyDays(List<Day> days) {
+    return days.map((day) => getTranslation(day.key)).join(' - ');
   }
 
   static getFormattedDays(List<Day> days) {

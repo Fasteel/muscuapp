@@ -1,18 +1,15 @@
+import 'dart:convert';
+
 import 'day.dart';
 
 class Workout {
-  int id;
+  int? id;
   String title;
   String state;
-  int user;
   List<Day> days;
 
   Workout(
-      {required this.id,
-      required this.title,
-      required this.state,
-      required this.user,
-      required this.days});
+      {this.id, required this.title, required this.state, required this.days});
 
   factory Workout.fromJson(Map<String, dynamic> res) {
     List<Day> days =
@@ -22,8 +19,15 @@ class Workout {
       id: res["id"],
       title: res["title"],
       state: res["state"],
-      user: res["user"],
       days: days,
     );
+  }
+
+  toJson() {
+    return jsonEncode({
+      "title": title,
+      "state": "AC",
+      "days": days.map((d) => d.id).toList()
+    });
   }
 }

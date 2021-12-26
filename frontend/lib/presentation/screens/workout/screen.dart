@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:muscuapp/application/helpers/day.dart';
 import 'package:muscuapp/application/helpers/exercice.dart';
+import 'package:muscuapp/application/models/day.dart';
 import 'package:muscuapp/application/models/exercice.dart';
 import 'package:muscuapp/application/models/workout.dart';
 import 'package:muscuapp/infrastructure/services/exercice.dart';
@@ -26,7 +27,7 @@ class WorkoutScreen extends StatefulWidget {
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
   final titleController = TextEditingController();
-  List<String> days = List<String>.empty();
+  List<Day> days = List<Day>.empty();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late Future<List<Exercice>>? _exercices;
   Workout? _workout;
@@ -36,8 +37,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     super.initState();
     if (widget.workout != null) {
       _workout = widget.workout;
+      days = _workout!.days;
       titleController.text = _workout!.title;
-      days = _workout!.days.map((e) => e.key).toList();
       _exercices = ExerciceService.fetchAll(_workout);
     } else {
       _exercices = null;
@@ -55,23 +56,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       return null;
     }
 
-    var i = 0;
-    var daysPK = translations.keys.fold<List<int>>([], (value, element) {
-      i++;
-      if (days.contains(element)) {
-        value.add(i);
-      }
-
-      return value;
-    });
-
     Response res;
 
     if (_workout == null) {
-      res = await WorkoutService.create(titleController.text, daysPK);
+      res = await WorkoutService.create(titleController.text, days);
     } else {
       res = await WorkoutService.update(
-          _workout!.id, titleController.text, daysPK);
+          _workout!.id!, titleController.text, days);
     }
 
     if (res.statusCode != 201 && res.statusCode != 200) {

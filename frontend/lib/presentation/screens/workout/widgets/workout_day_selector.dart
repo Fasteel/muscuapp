@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muscuapp/application/helpers/day.dart';
+import 'package:muscuapp/application/models/day.dart';
 import 'package:muscuapp/presentation/screens/days/screen.dart';
 
 class WorkoutDaySelector extends StatelessWidget {
@@ -7,7 +8,7 @@ class WorkoutDaySelector extends StatelessWidget {
       {Key? key, required this.days, required this.onDaysSelected})
       : super(key: key);
 
-  final List<String> days;
+  final List<Day> days;
   final void Function(dynamic) onDaysSelected;
 
   @override
