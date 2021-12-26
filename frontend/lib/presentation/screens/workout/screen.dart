@@ -138,19 +138,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           var exercice = snapshot.data![index];
-                          var numberToString = ExerciceHelper.formatSetNumber(
-                              exercice.setNumber.toString());
-                          var repetitionNumberToString =
-                              ExerciceHelper.formatRepetitionNumber(
-                                  exercice.repetitionNumber.toString());
-                          var formatDuration = ExerciceHelper.formatDuration(
-                              exercice.pauseDuration.toString());
 
                           return ExerciceCard(
                               title: exercice.title,
                               subTitle:
-                                  "$numberToString $repetitionNumberToString",
-                              rightLabel: formatDuration);
+                                  "${ExerciceHelper.formatSetNumber(exercice)} ${ExerciceHelper.formatRepetitionNumber(exercice)}",
+                              rightLabel:
+                                  ExerciceHelper.formatDuration(exercice));
                         },
                       );
                     })
