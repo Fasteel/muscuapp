@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muscuapp/application/models/exercice.dart';
 import 'package:muscuapp/application/models/workout.dart';
 import 'package:muscuapp/infrastructure/services/exercice.dart';
 import 'package:muscuapp/presentation/common/toast.dart';
@@ -29,14 +30,18 @@ class _ExerciceScreenState extends State<ExerciceScreen> {
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () async {
-                final response = await ExerciceService.create(
-                    titleController.text,
-                    int.parse(pauseDurationController.text),
-                    int.parse(setNumberController.text),
-                    int.parse(repetitionNumberController.text),
-                    int.parse(weightController.text),
-                    widget.workout.id!,
-                    int.parse(positionController.text));
+                var exercice = Exercice(
+                  title: titleController.text,
+                  pauseDuration: int.parse(pauseDurationController.text),
+                  setNumber: int.parse(setNumberController.text),
+                  repetitionNumber: int.parse(repetitionNumberController.text),
+                  weight: int.parse(weightController.text),
+                  workout: widget.workout.id!,
+                  position: int.parse(positionController.text),
+                );
+
+                var response = await ExerciceService.create(exercice);
+
                 if (response.statusCode != 201) {
                   Toast.fail('Failed to create exercice');
                 } else {

@@ -37,7 +37,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     super.initState();
     if (widget.workout != null) {
       _workout = widget.workout;
-      days = _workout!.days;
+      days = List.from(_workout!.days); // ????
       titleController.text = _workout!.title;
       _exercices = ExerciceService.fetchAll(_workout);
     } else {
@@ -59,10 +59,18 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     Response res;
 
     if (_workout == null) {
-      res = await WorkoutService.create(titleController.text, days);
+      var workout =
+          Workout(title: titleController.text, state: 'AC', days: days)
+              .toJson();
+      res = await WorkoutService.create(workout);
     } else {
-      res = await WorkoutService.update(
-          _workout!.id!, titleController.text, days);
+      var workout = Workout(
+        id: _workout!.id!,
+        title: titleController.text,
+        state: 'AC',
+        days: days,
+      );
+      res = await WorkoutService.update(workout);
     }
 
     if (res.statusCode != 201 && res.statusCode != 200) {

@@ -29,20 +29,13 @@ class WorkoutService {
     return Workout.fromJson(json.decode(response.body));
   }
 
-  static Future<Response> create(String title, List<Day> days) {
+  static Future<Response> create(Workout workout) {
     return post(Uri.parse(constants.baseUrl + endpoint),
-        headers: getDefaultHeader(),
-        body: Workout(title: title, state: 'AC', days: days).toJson());
+        headers: getDefaultHeader(), body: workout.toJson());
   }
 
-  static Future<Response> update(int id, String title, List<Day> days) {
-    return put(Uri.parse(constants.baseUrl + endpoint + id.toString()),
-        headers: getDefaultHeader(),
-        body: Workout(
-          id: id,
-          title: title,
-          state: 'AC',
-          days: days,
-        ).toJson());
+  static Future<Response> update(Workout workout) {
+    return put(Uri.parse(constants.baseUrl + endpoint + workout.id.toString()),
+        headers: getDefaultHeader(), body: workout.toJson());
   }
 }
