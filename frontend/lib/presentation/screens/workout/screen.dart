@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:muscuapp/application/helpers/day.dart';
+import 'package:muscuapp/application/helpers/exercice.dart';
 import 'package:muscuapp/application/models/exercice.dart';
 import 'package:muscuapp/application/models/workout.dart';
 import 'package:muscuapp/infrastructure/services/exercice.dart';
@@ -137,14 +138,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           var exercice = snapshot.data![index];
+                          var numberToString = ExerciceHelper.formatSetNumber(
+                              exercice.setNumber.toString());
+                          var repetitionNumberToString =
+                              ExerciceHelper.formatRepetitionNumber(
+                                  exercice.repetitionNumber.toString());
+                          var formatDuration = ExerciceHelper.formatDuration(
+                              exercice.pauseDuration.toString());
+
                           return ExerciceCard(
                               title: exercice.title,
-                              subTitle: exercice.setNumber.toString() +
-                                  " x " +
-                                  exercice.repetitionNumber.toString() +
-                                  " rep",
-                              rightLabel:
-                                  exercice.pauseDuration.toString() + " sec");
+                              subTitle:
+                                  "$numberToString $repetitionNumberToString",
+                              rightLabel: formatDuration);
                         },
                       );
                     })
