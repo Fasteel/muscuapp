@@ -37,7 +37,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     super.initState();
     if (widget.workout != null) {
       _workout = widget.workout;
-      days = List.from(_workout!.days); // ????
+      days = List.from(_workout!.days);
       titleController.text = _workout!.title;
       _exercices = ExerciceService.fetchAll(_workout);
     } else {
