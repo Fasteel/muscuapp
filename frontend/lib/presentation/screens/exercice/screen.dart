@@ -35,7 +35,7 @@ class _ExerciceScreenState extends State<ExerciceScreen> {
                     int.parse(setNumberController.text),
                     int.parse(repetitionNumberController.text),
                     int.parse(weightController.text),
-                    widget.workout.id,
+                    widget.workout.id!,
                     int.parse(positionController.text));
                 if (response.statusCode != 201) {
                   Toast.fail('Failed to create exercice');
