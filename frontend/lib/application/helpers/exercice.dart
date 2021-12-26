@@ -9,7 +9,7 @@ class ExerciceHelper {
     return "${exercice.repetitionNumber.toString()} rep";
   }
 
-  static String formatDuration(Exercice exercice) {
+  static String formatPauseDuration(Exercice exercice) {
     return "${exercice.pauseDuration.toString()} sec";
   }
 }

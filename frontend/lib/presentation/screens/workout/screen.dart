@@ -144,7 +144,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                               subTitle:
                                   "${ExerciceHelper.formatSetNumber(exercice)} ${ExerciceHelper.formatRepetitionNumber(exercice)}",
                               rightLabel:
-                                  ExerciceHelper.formatDuration(exercice));
+                                  ExerciceHelper.formatPauseDuration(exercice));
                         },
                       );
                     })
